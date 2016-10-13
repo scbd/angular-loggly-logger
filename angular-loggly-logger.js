@@ -233,7 +233,7 @@
           attach: attach,
           sendMessage: sendMessage,
           logToConsole: logToConsole,
-          endpoint:endpoint
+          endpoint:endpoint,
 
           /**
            * Get or set the fields to be sent with all logged events.
