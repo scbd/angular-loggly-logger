@@ -30,12 +30,21 @@
       // The minimum level of messages that should be sent to loggly.
       var level = 0;
 
-      var token = null;
-      var endpoint = '://logs-01.loggly.com/inputs/';
+      var endpoint = null;
+      //'://localhost:8000/api/v2016/application-error-logs/';
 
-        var buildUrl = function () {
-          return (https ? 'https' : 'http') + endpoint + token + '/tag/' + (tag ? tag : 'AngularJS' ) + '/';
-        };
+      var buildUrl = function () {
+        return  endpoint;
+      };
+
+      this.endpoint = function ( d ) {
+        if( angular.isDefined( d ) ) {
+          endpoint = d;
+          return self;
+        }
+
+        return endpoint;
+      };
 
       this.setExtra = function (d) {
         extra = d;
@@ -58,15 +67,6 @@
         }
 
         return labels;
-      };
-
-      this.inputToken = function ( s ) {
-        if (angular.isDefined(s)) {
-          token = s;
-          return self;
-        }
-
-        return token;
       };
 
       this.useHttps = function (flag) {
@@ -173,8 +173,8 @@
          * @param data
          */
         var sendMessage = function (data) {
-          //If a token is not configured, don't do anything.
-          if (!token || !loggingEnabled) {
+          //If loggingEnabled is false, don't do anything.
+          if (!endpoint || !loggingEnabled) {
             return;
           }
 
@@ -202,12 +202,12 @@
 
           //Loggly's API doesn't send us cross-domain headers, so we can't interact directly
            //Set header
-          var config = {
-            headers: {
-             'Content-Type': 'text/plain'
-            },
-            withCredentials: false
-          };
+          // var config = {
+          //   headers: {
+          //    'Content-Type': 'text/plain'
+          //   },
+          //   withCredentials: false
+          // };
 
           // Apply labels
           for (var label in labels) {
@@ -218,18 +218,10 @@
           }
 
           //Ajax call to send data to loggly
-          $http.post(buildUrl(),sentData,config);
+          $http.post(buildUrl(),sentData);
         };
 
         var attach = function() {
-        };
-
-        var inputToken = function(s) {
-          if (angular.isDefined(s)) {
-            token = s;
-          }
-
-          return token;
         };
 
         return {
@@ -241,7 +233,6 @@
           attach: attach,
           sendMessage: sendMessage,
           logToConsole: logToConsole,
-          inputToken: inputToken,
 
           /**
            * Get or set the fields to be sent with all logged events.
