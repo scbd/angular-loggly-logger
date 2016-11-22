@@ -270,7 +270,7 @@
               message: msg,
               line: line,
               col: col,
-              stack: error && error.stack
+              stack: error && error.stack||''
             });
 
             if (_onerror && typeof _onerror === 'function') {
