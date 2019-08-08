@@ -218,7 +218,7 @@
 
           //Loggly's API doesn't send us cross-domain headers, so we can't interact directly
            //Set header
-          // var config = {
+          var config = {};
           //   headers: {
           //    'Content-Type': 'text/plain'
           //   },
