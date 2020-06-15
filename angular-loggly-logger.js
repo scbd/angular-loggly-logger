@@ -32,6 +32,7 @@
       var labels = {};
       var deleteHeaders = false;
 
+      var ignoreMessageRegex;
       // The minimum level of messages that should be sent to loggly.
       var level = 0;
 
@@ -177,6 +178,14 @@
         return deleteHeaders;
       };
 
+      this.ignoreMessageRegex = function (regex) {
+        if (angular.isDefined(regex)) {
+          ignoreMessageRegex = regex;
+          return self;
+        }
+
+        return ignoreMessageRegex;
+      };
 
 
       this.$get = [ '$injector', function ($injector) {
@@ -214,6 +223,17 @@
 
           if( includeUserAgent ) {
             sentData.userAgent = $window.navigator.userAgent;
+          }
+
+          if(ignoreMessageRegex){
+            try{
+              var stringError = JSON.stringify(sentData);
+              if(ignoreMessageRegex.test(stringError))
+                return;
+            }
+            catch(err){
+              console.log(err)
+            }
           }
 
           //Loggly's API doesn't send us cross-domain headers, so we can't interact directly
